@@ -6,15 +6,22 @@ from firebase_admin import messaging
 from app.core.logging import get_logger
 logger = get_logger()
 
+import os
+import json
+import firebase_admin
+
+
+
 class FirebasePushService:
 
     def __init__(self):
 
         if not firebase_admin._apps:
-            cred = credentials.Certificate(
-                "firebase-service-account.json"
+            service_account = json.loads(
+                os.environ["FIREBASE_SERVICE_ACCOUNT"]
             )
 
+            cred = credentials.Certificate(service_account)
             firebase_admin.initialize_app(cred)
 
     async def send_to_token(
